@@ -101,14 +101,13 @@ namespace SPTAG
         m_pTrees.InitSearchTrees(this, p_query, p_space); \
         const DimensionType checkPos = m_pGraph.m_iNeighborhoodSize - 1; \
         while (!p_space.m_SPTQueue.empty()) { \
-            m_pTrees.SearchTrees(this, p_query, p_space, m_iNumberOfOtherDynamicPivots + p_space.m_iNumberOfCheckedLeaves); \
+            m_pTrees.SearchTrees(this, p_query, p_space, 1 + p_space.m_iNumberOfCheckedLeaves); \
             while (!p_space.m_NGQueue.empty()) { \
                 COMMON::HeapCell gnode = p_space.m_NGQueue.pop(); \
                 const SizeType *node = m_pGraph[gnode.node]; \
                 _mm_prefetch((const char *)node, _MM_HINT_T0); \
                 CheckDeleted1 { \
                     if (p_query.AddPoint(gnode.node, gnode.distance)) { \
-                        p_space.m_iNumOfContinuousNoBetterPropagation = 0; \
                         SizeType checkNode = node[checkPos]; \
                         if (checkNode < -1) { \
                             const COMMON::BKTNode& tnode = m_pTrees[-2 - checkNode]; \
@@ -118,8 +117,7 @@ namespace SPTAG
                         } \
                     } \
                     else { \
-                        p_space.m_iNumOfContinuousNoBetterPropagation++; \
-                        if (p_space.m_iNumOfContinuousNoBetterPropagation > p_space.m_iContinuousLimit || p_space.m_iNumberOfCheckedLeaves > p_space.m_iMaxCheck) { \
+                        if (p_space.m_iNumberOfCheckedLeaves > p_space.m_iMaxCheck) { \
                             p_query.SortResult(); return; \
                         } \
                     } \
@@ -134,9 +132,6 @@ namespace SPTAG
                     float distance2leaf = m_fComputeDistance(p_query.GetTarget(), (m_pSamples)[nn_index], GetFeatureDim()); \
                     p_space.m_iNumberOfCheckedLeaves++; \
                     p_space.m_NGQueue.insert(COMMON::HeapCell(nn_index, distance2leaf)); \
-                } \
-                if (p_space.m_NGQueue.Top().distance > p_space.m_SPTQueue.Top().distance) { \
-                    break; \
                 } \
             } \
         } \
