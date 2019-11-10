@@ -117,6 +117,7 @@ namespace SPTAG
             template <typename T>
             void RefineGraph(VectorIndex* index, const std::unordered_map<SizeType, SizeType>* idmap = nullptr)
             {
+		std::cout << "before RNG, graph acc:" << GraphAccuracyEstimation(index, 100, idmap) << std::endl;
                 m_iCEF *= m_iCEFScale;
                 m_iMaxCheckForRefineGraph *= m_iCEFScale;
 
