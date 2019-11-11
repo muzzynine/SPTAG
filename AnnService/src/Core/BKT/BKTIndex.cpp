@@ -106,23 +106,9 @@ namespace SPTAG
                 COMMON::HeapCell gnode = p_space.m_NGQueue.pop(); \
                 const SizeType *node = m_pGraph[gnode.node]; \
                 _mm_prefetch((const char *)node, _MM_HINT_T0); \
-                CheckDeleted1 { \
-                    if (p_query.AddPoint(gnode.node, gnode.distance)) { \
-                        p_space.m_iNumOfContinuousNoBetterPropagation = 0; \
-                        SizeType checkNode = node[checkPos]; \
-                        if (checkNode < -1) { \
-                            const COMMON::BKTNode& tnode = m_pTrees[-2 - checkNode]; \
-                            for (SizeType i = -tnode.childStart; i < tnode.childEnd; i++) { \
-                                if (!p_query.AddPoint(m_pTrees[i].centerid, gnode.distance)) break; \
-                            } \
-                        } \
-                    } \
-                    else { \
-                        p_space.m_iNumOfContinuousNoBetterPropagation++; \
-                        if (p_space.m_iNumOfContinuousNoBetterPropagation > p_space.m_iContinuousLimit || p_space.m_iNumberOfCheckedLeaves > p_space.m_iMaxCheck) { \
-                            p_query.SortResult(); return; \
-                        } \
-                    } \
+		p_query.AddPoint(gnode.node, gnode.distance)  \
+		if (p_space.m_iNumberOfCheckedLeaves > p_space.m_iMaxCheck) { \
+                    p_query.SortResult(); return; \
                 } \
                 for (DimensionType i = 0; i <= checkPos; i++) { \
                     _mm_prefetch((const char *)(m_pSamples)[node[i]], _MM_HINT_T0); \
@@ -134,9 +120,6 @@ namespace SPTAG
                     float distance2leaf = m_fComputeDistance(p_query.GetTarget(), (m_pSamples)[nn_index], GetFeatureDim()); \
                     p_space.m_iNumberOfCheckedLeaves++; \
                     p_space.m_NGQueue.insert(COMMON::HeapCell(nn_index, distance2leaf)); \
-                } \
-                if (p_space.m_NGQueue.Top().distance > p_space.m_SPTQueue.Top().distance) { \
-                    break; \
                 } \
             } \
         } \
