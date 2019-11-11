@@ -101,7 +101,7 @@ namespace SPTAG
         m_pTrees.InitSearchTrees(this, p_query, p_space); \
         const DimensionType checkPos = m_pGraph.m_iNeighborhoodSize - 1; \
         while (!p_space.m_SPTQueue.empty()) { \
-            m_pTrees.SearchTrees(this, p_query, p_space, m_iNumberOfOtherDynamicPivots + p_space.m_iNumberOfCheckedLeaves); \
+            m_pTrees.SearchTrees(this, p_query, p_space, 1 + p_space.m_iNumberOfCheckedLeaves); \
             while (!p_space.m_NGQueue.empty()) { \
                 COMMON::HeapCell gnode = p_space.m_NGQueue.pop(); \
                 const SizeType *node = m_pGraph[gnode.node]; \
