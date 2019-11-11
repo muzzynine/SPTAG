@@ -106,7 +106,7 @@ namespace SPTAG
                 COMMON::HeapCell gnode = p_space.m_NGQueue.pop(); \
                 const SizeType *node = m_pGraph[gnode.node]; \
                 _mm_prefetch((const char *)node, _MM_HINT_T0); \
-		p_query.AddPoint(gnode.node, gnode.distance)  \
+		p_query.AddPoint(gnode.node, gnode.distance);  \
 		if (p_space.m_iNumberOfCheckedLeaves > p_space.m_iMaxCheck) { \
                     p_query.SortResult(); return; \
                 } \
